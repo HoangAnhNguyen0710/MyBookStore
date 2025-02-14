@@ -8,7 +8,7 @@ import {
   Rating,
   Typography,
 } from "@mui/material";
-import { CafeCardItem } from "./CarouselCard";
+import { BookCardItem } from "./CarouselCard";
 import StarIcon from "@mui/icons-material/Star";
 
 export interface ReviewCardItem {
@@ -18,7 +18,7 @@ export interface ReviewCardItem {
   created_at: Date;
   content: string;
   rating: number;
-  cafe: CafeCardItem;
+  book: BookCardItem;
 }
 
 export interface ReviewCardProps {
@@ -61,7 +61,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
               variant="body2"
               className="text-gray-500 text-sm font-medium"
             >
-              {review.cafe.name} ・ {review.cafe.total_reviews} reviews
+              {review.book.title} ・ {review.book.total_reviews} reviews
             </Typography>
           </Box>
         </Box>
@@ -105,16 +105,16 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         >
           <Box component="div" className="flex flex-col">
             <Typography variant="h6" className="font-bold text-lg">
-              {review.cafe.name}
+              {review.book.title}
             </Typography>
             <Typography
               className="flex items-center text-sm font-medium"
               color="inherit"
             >
-              <span>Cafe ・ </span>
-              <span className="px-2">{review.cafe.location_province} ・ </span>
+              <span>Book ・ </span>
+              <span className="px-2">{review.book.author} ・ </span>
               <span className="flex items-center">
-                {review.cafe.avg_rating}
+                {review.book.avg_rating}
                 <StarIcon fontSize="small" className="ml-1" />
               </span>
             </Typography>

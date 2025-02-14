@@ -1,58 +1,50 @@
 "use client";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Rating,
-  Typography,
-} from "@mui/material";
+import { Card, CardMedia } from "@mui/material";
 
-export interface CafeCardItem {
+export interface BookCardItem {
   id: number;
-  preview_url: string;
-  name: string;
+  title: string;
+  cover_url: string;
+  price: number;
   avg_rating: number;
-  total_reviews?: number;
-  location_province?: string;
-  price_from?: number;
-  price_to?: number;
+  author: string;
+  total_reviews: number;
 }
 
 export interface CarouselCardProps {
-  cafe: CafeCardItem;
+  book: BookCardItem;
 }
 
-export default function CarouselCard({ cafe }: CarouselCardProps) {
+export default function CarouselCard({ book }: CarouselCardProps) {
   return (
-    <Card sx={{ maxWidth: 320, my: 1.5, mx: 1.75 }}>
+    <Card sx={{ px: 6 }}>
       <CardMedia
-        sx={{ height: 180 }}
-        image={cafe.preview_url}
-        title={cafe.name}
+        sx={{ height: 400 }}
+        image={book.cover_url}
+        title={book.title}
       />
-      <CardContent className="flex flex-col">
-        <Typography gutterBottom variant="h5" component="div">
-          {cafe.name}
-        </Typography>
-        <div className="flex items-center justify-between">
-          <Rating value={cafe.avg_rating} precision={0.25} />
-          <Typography>
-            {cafe.total_reviews ? cafe.total_reviews : 0} reviews
+      {/* <CardContent className="flex flex-col px-8">
+          <Typography 
+            gutterBottom 
+            variant="h5" 
+            component="div" 
+            className="text-gray-800 font-bold"
+            sx={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 2,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              minHeight: "2.5em"
+            }}
+          >
+            {book.title}
           </Typography>
-        </div>
-        <div className="py-2">
-          <Typography>{cafe.location_province}</Typography>
-          <Typography>
-            {cafe.price_from ? cafe.price_from : "?"} ~{" "}
-            {cafe.price_to ? cafe.price_to : "?"}
-          </Typography>
-        </div>
         <Button variant="outlined" color="error">
           {" "}
           See more ...{" "}
         </Button>
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }

@@ -1,11 +1,10 @@
 "use client";
 
-import { Footer } from "@/components/Layouts/Footer";
-import { Navbar } from "@/components/Layouts/NavBar";
 import { setUser } from "@/contexts/userSlice";
 import { verifyUser } from "@/services/verifyUser";
-
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
 import { useDispatch } from "react-redux";
 
 export default function RootLayout({
@@ -14,6 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const dispatch = useDispatch();
+  const router = useRouter();
   useEffect(() => {
     async function verify() {
       const accessToken = localStorage.getItem("accessToken");
@@ -21,8 +21,8 @@ export default function RootLayout({
       if (accessToken) {
         const user = await verifyUser(accessToken);
         if(user){
-          console.log(user);
           dispatch(setUser(user));
+          router.push("/");
         }
       }
     }
@@ -30,9 +30,7 @@ export default function RootLayout({
   }, []);
   return (
     <div className="relative">
-      <Navbar />
       <div className="">{children}</div>
-      <Footer />
     </div>
   );
 }
