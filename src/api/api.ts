@@ -110,10 +110,10 @@ export interface BookFilterResponseDto {
     'total'?: number;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<BookListItem>}
      * @memberof BookFilterResponseDto
      */
-    'list'?: Array<string>;
+    'list'?: Array<BookListItem>;
 }
 /**
  * 
@@ -335,6 +335,25 @@ export interface BookListItem {
 /**
  * 
  * @export
+ * @interface CategoryDto
+ */
+export interface CategoryDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryDto
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryDto
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateBookDto
  */
 export interface CreateBookDto {
@@ -476,16 +495,16 @@ export interface GetBookResponseDto {
     'isbn': string;
     /**
      * 
-     * @type {object}
+     * @type {PublisherDto}
      * @memberof GetBookResponseDto
      */
-    'publisherId': object;
+    'publisher': PublisherDto | null;
     /**
      * 
-     * @type {object}
+     * @type {CategoryDto}
      * @memberof GetBookResponseDto
      */
-    'categoryId': object;
+    'category': CategoryDto | null;
     /**
      * 
      * @type {string}
@@ -522,6 +541,12 @@ export interface GetBookResponseDto {
      * @memberof GetBookResponseDto
      */
     'rating': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetBookResponseDto
+     */
+    'stock_quantity': number;
     /**
      * 
      * @type {number}
@@ -639,6 +664,25 @@ export interface LoginResponseDto {
      * @memberof LoginResponseDto
      */
     'user': UserBasicInfor;
+}
+/**
+ * 
+ * @export
+ * @interface PublisherDto
+ */
+export interface PublisherDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof PublisherDto
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublisherDto
+     */
+    'name': string;
 }
 /**
  * 

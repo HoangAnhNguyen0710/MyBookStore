@@ -4,11 +4,11 @@ import { Card, CardMedia } from "@mui/material";
 export interface BookCardItem {
   id: number;
   title: string;
-  cover_url: string;
+  cover_image_url: string;
   price: number;
-  avg_rating: number;
+  rating: number;
   author: string;
-  total_reviews: number;
+  number_of_reviews: number;
 }
 
 export interface CarouselCardProps {
@@ -20,7 +20,7 @@ export default function CarouselCard({ book }: CarouselCardProps) {
     <Card sx={{ px: 6 }}>
       <CardMedia
         sx={{ height: 400 }}
-        image={book.cover_url}
+        image={book.cover_image_url}
         title={book.title}
       />
       {/* <CardContent className="flex flex-col px-8">

@@ -61,7 +61,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
               variant="body2"
               className="text-gray-500 text-sm font-medium"
             >
-              {review.book.title} ・ {review.book.total_reviews} reviews
+              {review.book.title} ・ {review.book.number_of_reviews} reviews
             </Typography>
           </Box>
         </Box>
@@ -76,9 +76,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
               size="small"
               className="text-yellow-500"
             />
-            <span className="px-2 text-sm text-gray-500">
-              3 days ago
-            </span>
+            <span className="px-2 text-sm text-gray-500">3 days ago</span>
           </Typography>
 
           <Typography
@@ -114,7 +112,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
               <span>Book ・ </span>
               <span className="px-2">{review.book.author} ・ </span>
               <span className="flex items-center">
-                {review.book.avg_rating}
+                {review.book.rating}
                 <StarIcon fontSize="small" className="ml-1" />
               </span>
             </Typography>
