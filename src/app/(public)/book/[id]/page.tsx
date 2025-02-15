@@ -13,7 +13,12 @@ import {
   TextField,
   Tab,
 } from "@mui/material";
-import { GetBookResponseDto } from "@/api";
+import {
+  BookFilterDto,
+  BookFilterResponseDto,
+  BookListItem,
+  GetBookResponseDto,
+} from "@/api";
 import { AxiosError } from "axios";
 import { getBook } from "@/services/getBook";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -22,6 +27,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { listingBooks } from "@/services/filterBooks";
+import BookCard from "@/components/Home/BookCard";
 
 const BookDetailPage: React.FC = () => {
   const params = useParams();
@@ -29,13 +36,30 @@ const BookDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>();
   const [item_value, setItemValue] = useState(0);
   const [tab_index, setTabIndex] = useState(0);
+  const [related_books, setRelatedBooks] = useState<
+    BookListItem[] | undefined
+  >();
   const id = params?.id;
   useEffect(() => {
     async function getBookDetail(id: string) {
       setLoading(true);
       try {
         const book = await getBook(id);
-        setBook(book as unknown as GetBookResponseDto);
+        const book_with_type = book as unknown as GetBookResponseDto;
+        setBook(book_with_type);
+        const filter_related_book: BookFilterDto = { page: 1, per_page: 8 };
+        // if (book_with_type.publisher) {
+        //   filter_related_book.publisher_ids = [book_with_type.publisher.id];
+        // }
+        if (book_with_type.category) {
+          filter_related_book.category_ids = [book_with_type.category.id];
+        }
+        const filter_list = await listingBooks(filter_related_book);
+        const related_list = (filter_list as unknown as BookFilterResponseDto)
+          .list;
+        setRelatedBooks(
+          related_list?.filter((book) => book.id !== book_with_type.id)
+        );
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           console.log(error?.response?.data?.message);
@@ -137,7 +161,7 @@ const BookDetailPage: React.FC = () => {
                   input: {
                     inputProps: {
                       min: 0,
-                      max: 200,
+                      max: book.stock_quantity,
                     },
                   },
                 }}
@@ -179,14 +203,14 @@ const BookDetailPage: React.FC = () => {
 
           {/* <Divider /> */}
 
-          {/* <Typography className="text-gray-700">
+          <Typography className="text-gray-700 !text-lg">
             <strong>Publisher:</strong>{" "}
-            {book.publisherId ? (book.publisherId as any).name : "Unknown"}
+            {book.publisher ? book.publisher.name : "Unknown"}
           </Typography>
-          <Typography className="text-gray-700">
+          <Typography className="text-gray-700 !text-lg">
             <strong>Category:</strong>{" "}
-            {book.categoryId ? (book.categoryId as any).name : "Unknown"}
-          </Typography> */}
+            {book.category ? book.category.name : "Unknown"}
+          </Typography>
 
           {/* <Divider /> */}
           <Typography className="text-gray-700 !text-lg">
@@ -223,26 +247,36 @@ const BookDetailPage: React.FC = () => {
             </Box>
           )}
         </Box>
-        <Box component="div" className="col-span-1 md:col-span-3 mt-8 w-full">
+        <Box
+          component="div"
+          className="col-span-1 md:col-span-3 mt-8 w-full "
+        >
           <TabContext value={tab_index}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 onChange={handleChangeTabIndex}
                 aria-label="lab API tabs example"
+                sx={{
+                  "& .MuiTabs-indicator": {
+                    backgroundColor: "#ff5722",
+                    height: 3, // Tăng độ dày của underline (tuỳ chọn)
+                    overflowX: "scroll"
+                  },
+                }}
               >
                 <Tab
                   label="Description"
-                  className="!text-lg !text-primary"
+                  className="!text-sm md:!text-lg !text-primary"
                   value={0}
                 />
                 <Tab
-                  label="Additional Information"
-                  className="!text-lg !text-primary"
+                  label="More Infor"
+                  className="!text-sm md:!text-lg !text-primary"
                   value={1}
                 />
                 <Tab
                   label="Reviews"
-                  className="!text-lg !text-primary"
+                  className="!text-sm md:!text-lg !text-primary"
                   value={2}
                 />
               </TabList>
@@ -272,24 +306,40 @@ const BookDetailPage: React.FC = () => {
               </Box>
             </TabPanel>
             <TabPanel value={2} className="!min-h-40">
-            <Typography className="text-gray-600 !text-lg">List of reviews here (coming soon)</Typography>
+              <Typography className="text-gray-600 !text-lg">
+                List of reviews here (coming soon)
+              </Typography>
             </TabPanel>
           </TabContext>
         </Box>
-        <Box component="div" className="col-span-1 md:col-span-3 mt-8 w-full px-4">
-          <Typography className="!text-2xl !text-primary !uppercase !mb-4 !font-bold">Related Items</Typography>
-          <Typography className="!text-base !text-slate-800">Coming soon ...</Typography>
+        <Box
+          component="div"
+          className="col-span-1 md:col-span-3 mt-8 w-full px-4"
+        >
+          <Typography className="!text-2xl !text-primary !uppercase !mb-4 !font-bold">
+            Related Items
+          </Typography>
+          {/* <Typography className="!text-base !text-slate-800">Coming soon ...</Typography> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full pb-8">
+            {related_books &&
+              related_books.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+          </div>
         </Box>
       </Box>
 
       {/* Mô tả sách */}
     </Container>
   ) : (
-    <Typography className="text-center mt-10 text-gray-500">
-      <Box component="div" className="min-h-64 flex items-center justify-center">
+    <Box className="text-center mt-10 text-gray-500">
+      <Box
+        component="div"
+        className="min-h-64 flex items-center justify-center"
+      >
         <Typography variant="h1">Book Not Found</Typography>
       </Box>
-    </Typography>
+    </Box>
   );
 };
 

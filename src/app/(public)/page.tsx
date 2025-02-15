@@ -12,38 +12,38 @@ const bookList: BookCardItem[] = [
   {
     id: 1,
     title: "The Great Gatsby",
-    cover_url: "/images/book1.jpg",
+    cover_image_url: "/images/book1.jpg",
     price: 150000,
-    avg_rating: 4.5,
+    rating: 4.5,
     author: "F. Scott Fitzgerald",
-    total_reviews: 100,
+    number_of_reviews: 100,
   },
   {
     id: 2,
     title: "1984",
-    cover_url: "/images/book2.jpg",
+    cover_image_url: "/images/book2.jpg",
     price: 180000,
-    avg_rating: 4.8,
+    rating: 4.8,
     author: "George Orwell",
-    total_reviews: 200,
+    number_of_reviews: 200,
   },
   {
     id: 3,
     title: "To Kill a Mockingbird",
-    cover_url: "/images/book1.jpg",
+    cover_image_url: "/images/book1.jpg",
     price: 160000,
-    avg_rating: 4.7,
+    rating: 4.7,
     author: "Harper Lee",
-    total_reviews: 150,
+    number_of_reviews: 150,
   },
   {
     id: 4,
     title: "Moby-Dick",
-    cover_url: "/images/book2.jpg",
+    cover_image_url: "/images/book2.jpg",
     price: 170000,
-    avg_rating: 4.3,
+    rating: 4.3,
     author: "Herman Melville",
-    total_reviews: 90,
+    number_of_reviews: 90,
   },
 ];
 
@@ -52,8 +52,8 @@ export default function Home() {
   const user = useSelector((state: RootState) => state.user.value);
   useEffect(() => {
     setIsLoading(false);
-    async function getBooks(){
-      console.log(await listingBooks({page: 1, per_page: 10}));
+    async function getBooks() {
+      console.log(await listingBooks({ page: 1, per_page: 10 }));
     }
 
     getBooks();
@@ -67,7 +67,7 @@ export default function Home() {
     <div className="grid justify-items-center min-h-screen pt-0 md:px-16 pb-20 gap-16">
       <div className="flex flex-wrap items-center justify-center w-full my-4">
         <div className=" h-fit">
-        <Carousel bookList={bookList} />
+          <Carousel bookList={bookList} />
         </div>
         <div className="hidden md:flex flex-col h-full w-2/5">
           <div className="relative h-1/2 w-full mb-2">
