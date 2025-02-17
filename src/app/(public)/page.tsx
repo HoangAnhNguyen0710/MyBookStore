@@ -7,6 +7,7 @@ import { RootState } from "@/config/redux/store";
 import BookCard, { BookCardItem } from "@/components/Home/BookCard";
 import { Carousel } from "@/components/Home/Carousel";
 import { listingBooks } from "@/services/filterBooks";
+import { BookFilterResponseDto, BookListItem } from "@/api";
 
 const bookList: BookCardItem[] = [
   {
@@ -50,10 +51,21 @@ const bookList: BookCardItem[] = [
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state: RootState) => state.user.value);
+  const [feature_books, setFeatureBooks] = useState<
+    BookListItem[] | undefined
+  >();
   useEffect(() => {
     setIsLoading(false);
     async function getBooks() {
-      console.log(await listingBooks({ page: 1, per_page: 10 }));
+      const books = await listingBooks({
+        page: 1,
+        per_page: 8,
+        rating_from: 4.5,
+        rating_to: 5,
+      });
+      const features_list = (books as unknown as BookFilterResponseDto).list;
+      console.log(features_list);
+      setFeatureBooks(features_list);
     }
 
     getBooks();
@@ -108,7 +120,7 @@ export default function Home() {
         className="md:px-16 w-full flex flex-col items-center justify-center"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-[1500px] pb-8">
-          {bookList.map((book) => (
+          {feature_books && feature_books.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
         </div>
