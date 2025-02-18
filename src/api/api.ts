@@ -378,16 +378,16 @@ export interface CreateOrderDto {
     'userId': string;
     /**
      * 
-     * @type {string}
+     * @type {OrderStatus}
      * @memberof CreateOrderDto
      */
-    'status': CreateOrderDtoStatusEnum;
+    'status': OrderStatus;
     /**
      * 
-     * @type {string}
+     * @type {PaymentMethod}
      * @memberof CreateOrderDto
      */
-    'payment_method': CreateOrderDtoPaymentMethodEnum;
+    'payment_method': PaymentMethod;
     /**
      * 
      * @type {string}
@@ -414,23 +414,6 @@ export interface CreateOrderDto {
     'detail': Array<OrderDetail>;
 }
 
-export const CreateOrderDtoStatusEnum = {
-    Pending: 'PENDING',
-    Paid: 'PAID',
-    Shipped: 'SHIPPED',
-    Delivered: 'DELIVERED',
-    Cancelled: 'CANCELLED'
-} as const;
-
-export type CreateOrderDtoStatusEnum = typeof CreateOrderDtoStatusEnum[keyof typeof CreateOrderDtoStatusEnum];
-export const CreateOrderDtoPaymentMethodEnum = {
-    CreditCard: 'CREDIT_CARD',
-    Paypal: 'PAYPAL',
-    CashOnDelivery: 'CASH_ON_DELIVERY',
-    BankTransfer: 'BANK_TRANSFER'
-} as const;
-
-export type CreateOrderDtoPaymentMethodEnum = typeof CreateOrderDtoPaymentMethodEnum[keyof typeof CreateOrderDtoPaymentMethodEnum];
 
 /**
  * 
@@ -655,6 +638,69 @@ export interface GetBookResponseDto {
 /**
  * 
  * @export
+ * @interface GetOrderResponseDto
+ */
+export interface GetOrderResponseDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof GetOrderResponseDto
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetOrderResponseDto
+     */
+    'userId': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetOrderResponseDto
+     */
+    'total_price': number;
+    /**
+     * 
+     * @type {OrderStatus}
+     * @memberof GetOrderResponseDto
+     */
+    'status': OrderStatus;
+    /**
+     * 
+     * @type {PaymentMethod}
+     * @memberof GetOrderResponseDto
+     */
+    'payment_method': PaymentMethod;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetOrderResponseDto
+     */
+    'shipping_address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetOrderResponseDto
+     */
+    'phone_number': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetOrderResponseDto
+     */
+    'note': string;
+    /**
+     * 
+     * @type {Array<OrderDetailResponseDto>}
+     * @memberof GetOrderResponseDto
+     */
+    'detail': Array<OrderDetailResponseDto>;
+}
+
+
+/**
+ * 
+ * @export
  * @interface ListingPublisherResponseDto
  */
 export interface ListingPublisherResponseDto {
@@ -758,6 +804,82 @@ export interface OrderDetail {
      */
     'sub_total': number;
 }
+/**
+ * 
+ * @export
+ * @interface OrderDetailResponseDto
+ */
+export interface OrderDetailResponseDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderDetailResponseDto
+     */
+    'orderId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderDetailResponseDto
+     */
+    'bookId': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof OrderDetailResponseDto
+     */
+    'book_title': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderDetailResponseDto
+     */
+    'book_price': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderDetailResponseDto
+     */
+    'quantity': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderDetailResponseDto
+     */
+    'sub_total': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const OrderStatus = {
+    Pending: 'PENDING',
+    Paid: 'PAID',
+    Shipped: 'SHIPPED',
+    Delivered: 'DELIVERED',
+    Cancelled: 'CANCELLED'
+} as const;
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PaymentMethod = {
+    CreditCard: 'CREDIT_CARD',
+    Paypal: 'PAYPAL',
+    CashOnDelivery: 'CASH_ON_DELIVERY',
+    BankTransfer: 'BANK_TRANSFER'
+} as const;
+
+export type PaymentMethod = typeof PaymentMethod[keyof typeof PaymentMethod];
+
+
 /**
  * 
  * @export
@@ -1153,16 +1275,16 @@ export interface UpdateOrderDto {
     'userId'?: string;
     /**
      * 
-     * @type {string}
+     * @type {OrderStatus}
      * @memberof UpdateOrderDto
      */
-    'status'?: UpdateOrderDtoStatusEnum;
+    'status'?: OrderStatus;
     /**
      * 
-     * @type {string}
+     * @type {PaymentMethod}
      * @memberof UpdateOrderDto
      */
-    'payment_method'?: UpdateOrderDtoPaymentMethodEnum;
+    'payment_method'?: PaymentMethod;
     /**
      * 
      * @type {string}
@@ -1189,23 +1311,6 @@ export interface UpdateOrderDto {
     'detail'?: Array<OrderDetail>;
 }
 
-export const UpdateOrderDtoStatusEnum = {
-    Pending: 'PENDING',
-    Paid: 'PAID',
-    Shipped: 'SHIPPED',
-    Delivered: 'DELIVERED',
-    Cancelled: 'CANCELLED'
-} as const;
-
-export type UpdateOrderDtoStatusEnum = typeof UpdateOrderDtoStatusEnum[keyof typeof UpdateOrderDtoStatusEnum];
-export const UpdateOrderDtoPaymentMethodEnum = {
-    CreditCard: 'CREDIT_CARD',
-    Paypal: 'PAYPAL',
-    CashOnDelivery: 'CASH_ON_DELIVERY',
-    BankTransfer: 'BANK_TRANSFER'
-} as const;
-
-export type UpdateOrderDtoPaymentMethodEnum = typeof UpdateOrderDtoPaymentMethodEnum[keyof typeof UpdateOrderDtoPaymentMethodEnum];
 
 /**
  * 
@@ -2300,6 +2405,7 @@ export const OrdersApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Get order details by ID
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2439,11 +2545,12 @@ export const OrdersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get order details by ID
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async ordersControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async ordersControllerFindOne(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetOrderResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.ordersControllerFindOne(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrdersApi.ordersControllerFindOne']?.[localVarOperationServerIndex]?.url;
@@ -2504,11 +2611,12 @@ export const OrdersApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @summary Get order details by ID
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        ordersControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        ordersControllerFindOne(id: string, options?: RawAxiosRequestConfig): AxiosPromise<GetOrderResponseDto> {
             return localVarFp.ordersControllerFindOne(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2564,6 +2672,7 @@ export class OrdersApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get order details by ID
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
