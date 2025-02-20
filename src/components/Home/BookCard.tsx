@@ -1,5 +1,6 @@
 "use client";
 import { BookListItem } from "@/api";
+import { addToCart } from "@/contexts/cartSlice";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 export interface BookCardItem {
   id: number;
@@ -26,6 +28,16 @@ export interface BookCardProps {
 }
 
 export default function BookCard({ book }: BookCardProps) {
+  const dispatch = useDispatch();
+  const addBookToCart = (
+    book: BookCardItem | BookListItem,
+    quantity: number
+  ) => {
+    dispatch(
+      addToCart({ bookId: book.id, quantity: quantity, price: book.price })
+    );
+    alert(`Added ${book.title} to cart!`);
+  };
   return (
     <Card
       sx={{
@@ -99,8 +111,9 @@ export default function BookCard({ book }: BookCardProps) {
             color="error"
             className="!mt-2 !text-red-600 !border-red-600 !hover:bg-red-50 self-start"
             size="small"
+            onClick={() => addBookToCart(book, 1)}
           >
-            More Info
+            Add To Cart
           </Button>
         </Box>
       </CardContent>

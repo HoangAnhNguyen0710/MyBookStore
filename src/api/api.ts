@@ -1269,22 +1269,16 @@ export interface UpdateNewUserDto {
 export interface UpdateOrderDto {
     /**
      * 
-     * @type {string}
-     * @memberof UpdateOrderDto
-     */
-    'userId'?: string;
-    /**
-     * 
      * @type {OrderStatus}
      * @memberof UpdateOrderDto
      */
-    'status'?: OrderStatus;
+    'status': OrderStatus;
     /**
      * 
      * @type {PaymentMethod}
      * @memberof UpdateOrderDto
      */
-    'payment_method'?: PaymentMethod;
+    'payment_method': PaymentMethod;
     /**
      * 
      * @type {string}
@@ -1296,19 +1290,13 @@ export interface UpdateOrderDto {
      * @type {string}
      * @memberof UpdateOrderDto
      */
-    'shipping_address'?: string;
+    'shipping_address': string;
     /**
      * 
      * @type {string}
      * @memberof UpdateOrderDto
      */
-    'phone_number'?: string;
-    /**
-     * 
-     * @type {Array<OrderDetail>}
-     * @memberof UpdateOrderDto
-     */
-    'detail'?: Array<OrderDetail>;
+    'phone_number': string;
 }
 
 
@@ -2472,8 +2460,9 @@ export const OrdersApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Update order basic information
          * @param {string} id 
-         * @param {UpdateOrderDto} updateOrderDto 
+         * @param {UpdateOrderDto} updateOrderDto Order basic data such as status, address, ..etc..
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2491,7 +2480,7 @@ export const OrdersApiAxiosParamCreator = function (configuration?: Configuratio
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -2570,8 +2559,9 @@ export const OrdersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Update order basic information
          * @param {string} id 
-         * @param {UpdateOrderDto} updateOrderDto 
+         * @param {UpdateOrderDto} updateOrderDto Order basic data such as status, address, ..etc..
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2630,8 +2620,9 @@ export const OrdersApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @summary Update order basic information
          * @param {string} id 
-         * @param {UpdateOrderDto} updateOrderDto 
+         * @param {UpdateOrderDto} updateOrderDto Order basic data such as status, address, ..etc..
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2695,8 +2686,9 @@ export class OrdersApi extends BaseAPI {
 
     /**
      * 
+     * @summary Update order basic information
      * @param {string} id 
-     * @param {UpdateOrderDto} updateOrderDto 
+     * @param {UpdateOrderDto} updateOrderDto Order basic data such as status, address, ..etc..
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrdersApi
