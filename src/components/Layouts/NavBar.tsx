@@ -28,7 +28,7 @@ const settings = ["Profile", "Orders", "Settings"];
 
 export const Navbar = () => {
   const user = useSelector((state: RootState) => state.user.value);
-  const cartItems = useSelector((state: RootState) => state.cart.items.length);
+  const cartItems = useSelector((state: RootState) => state.cart.length);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
