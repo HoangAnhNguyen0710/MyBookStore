@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "@/config/redux/store";
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/config/redux/store";
 import BookCard, { BookCardItem } from "@/components/Home/BookCard";
 import { Carousel } from "@/components/Home/Carousel";
 import { listingBooks } from "@/services/filterBooks";
@@ -50,7 +50,7 @@ const bookList: BookCardItem[] = [
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const user = useSelector((state: RootState) => state.user.value);
+  // const user = useSelector((state: RootState) => state.user.value);
   const [feature_books, setFeatureBooks] = useState<
     BookListItem[] | undefined
   >();
@@ -100,12 +100,6 @@ export default function Home() {
               priority={true}
             />
           </div>
-          {/* <Image
-              src="data:image/png;base64,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"
-              alt="Banner"
-              width={200}
-              height={200}
-            /> */}
         </div>
       </div>
 
@@ -138,13 +132,13 @@ export default function Home() {
         </Button>
       </Box>
 
-      {user && (
+      {/* {user && (
         <div>
           <div>
             User: {user.email}, Name: {user.name}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
