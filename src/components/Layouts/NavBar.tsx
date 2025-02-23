@@ -17,6 +17,8 @@ import { RootState } from "@/config/redux/store";
 import { logout } from "@/services/authenticateUser";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Badge from "@mui/material/Badge";
+import { Popover } from "@mui/material";
+import CartDetail from "./CartDetail";
 
 const pages = [
   { label: "Products", path: "products" },
@@ -29,8 +31,14 @@ const settings = ["Profile", "Orders", "Settings"];
 export const Navbar = () => {
   const user = useSelector((state: RootState) => state.user.value);
   const cartItems = useSelector((state: RootState) => state.cart.length);
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElCart, setAnchorElCart] =
+    React.useState<null | HTMLButtonElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -49,6 +57,14 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     return logout();
+  };
+
+  const handleOpenCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorElCart(event.currentTarget);
+  };
+
+  const handleCloseCart = () => {
+    setAnchorElCart(null);
   };
 
   return (
@@ -89,7 +105,10 @@ export const Navbar = () => {
                   onClick={handleCloseNavMenu}
                   className="hover:bg-secondary"
                 >
-                  <Link className="text-center text-lg px-2" href={`/${page.path}`}>
+                  <Link
+                    className="text-center text-lg px-2"
+                    href={`/${page.path}`}
+                  >
                     {page.label}
                   </Link>
                 </MenuItem>
@@ -109,7 +128,10 @@ export const Navbar = () => {
                 sx={{ my: 2, color: "white", display: "block" }}
                 className="hover:bg-secondary"
               >
-                <Link className="text-center text-lg font-semibold px-2" href={`/${page.path}`}>
+                <Link
+                  className="text-center text-lg font-semibold px-2"
+                  href={`/${page.path}`}
+                >
                   {page.label}
                 </Link>
               </Button>
@@ -118,13 +140,19 @@ export const Navbar = () => {
 
           {/* Cart */}
           <Box className="mx-4">
-            <Link href="/cart">
-              <IconButton color="inherit">
-                <Badge badgeContent={cartItems} color="error">
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton>
-            </Link>
+            {/* <Link href="/cart"> */}
+            <IconButton
+              color="inherit"
+              onClick={handleOpenCart}
+              aria-describedby={
+                Boolean(anchorElCart) ? "simple-popover" : undefined
+              }
+            >
+              <Badge badgeContent={cartItems} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+            {/* </Link> */}
           </Box>
 
           {/* User */}
@@ -148,7 +176,9 @@ export const Navbar = () => {
                 >
                   {settings.map((setting) => (
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
+                      <Typography sx={{ textAlign: "center" }}>
+                        {setting}
+                      </Typography>
                     </MenuItem>
                   ))}
                   <MenuItem onClick={handleLogout}>
@@ -157,12 +187,28 @@ export const Navbar = () => {
                 </Menu>
               </>
             ) : (
-              <Button variant="text" className="text-white text-2xl" color="inherit">
+              <Button
+                variant="text"
+                className="text-white text-2xl"
+                color="inherit"
+              >
                 <Link href="/auth/login">Login / Register</Link>
               </Button>
             )}
           </Box>
         </Toolbar>
+        <Popover
+          id={Boolean(anchorElCart) ? "simple-popover" : undefined}
+          open={Boolean(anchorElCart)}
+          anchorEl={anchorElCart}
+          onClose={handleCloseCart}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <CartDetail />
+        </Popover>
       </Container>
     </AppBar>
   );
