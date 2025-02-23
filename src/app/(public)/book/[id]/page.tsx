@@ -29,9 +29,12 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { listingBooks } from "@/services/filterBooks";
 import BookCard from "@/components/Home/BookCard";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/contexts/cartSlice";
 
 const BookDetailPage: React.FC = () => {
   const params = useParams();
+  const dispatch = useDispatch();
   const [book, setBook] = useState<GetBookResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>();
   const [item_value, setItemValue] = useState(0);
@@ -94,6 +97,17 @@ const BookDetailPage: React.FC = () => {
     newValue: number
   ) => {
     setTabIndex(newValue);
+  };
+
+  const addBookToCart = (book: GetBookResponseDto, quantity: number) => {
+    if (quantity <= 0) {
+      alert("Choose the quantity u want to add!");
+      return;
+    }
+    dispatch(
+      addToCart({ bookId: book.id, quantity: quantity, price: book.price, title: book.title })
+    );
+    alert(`Added ${book.title} to cart!`);
   };
   // const [tabIndex, setTabIndex] = useState<number>(0);
 
@@ -187,6 +201,7 @@ const BookDetailPage: React.FC = () => {
               <Button
                 variant="contained"
                 className="!bg-slate-800 hover:!bg-primary !p-4 !rounded-3xl !font-semibold"
+                onClick={() => addBookToCart(book, item_value)}
               >
                 Add To Cart
               </Button>
@@ -247,10 +262,7 @@ const BookDetailPage: React.FC = () => {
             </Box>
           )}
         </Box>
-        <Box
-          component="div"
-          className="col-span-1 md:col-span-3 mt-8 w-full "
-        >
+        <Box component="div" className="col-span-1 md:col-span-3 mt-8 w-full ">
           <TabContext value={tab_index}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
@@ -260,7 +272,7 @@ const BookDetailPage: React.FC = () => {
                   "& .MuiTabs-indicator": {
                     backgroundColor: "#ff5722",
                     height: 3, // Tăng độ dày của underline (tuỳ chọn)
-                    overflowX: "scroll"
+                    overflowX: "scroll",
                   },
                 }}
               >

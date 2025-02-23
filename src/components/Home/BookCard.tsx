@@ -34,7 +34,7 @@ export default function BookCard({ book }: BookCardProps) {
     quantity: number
   ) => {
     dispatch(
-      addToCart({ bookId: book.id, quantity: quantity, price: book.price })
+      addToCart({ bookId: book.id, quantity: quantity, price: book.price, title: book.title })
     );
     alert(`Added ${book.title} to cart!`);
   };
