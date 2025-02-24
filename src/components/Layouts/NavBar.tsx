@@ -207,7 +207,7 @@ export const Navbar = () => {
             horizontal: "left",
           }}
         >
-          <CartDetail />
+          <CartDetail handleChangePage={handleCloseCart}/>
         </Popover>
       </Container>
     </AppBar>
