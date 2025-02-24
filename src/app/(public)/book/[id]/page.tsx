@@ -89,7 +89,8 @@ const BookDetailPage: React.FC = () => {
     const newValue = parseInt(event.target.value, 10);
     if (!isNaN(newValue)) {
       setItemValue(Math.max(0, Math.min(newValue, 200))); // Giới hạn từ 0 - 200
-    }
+    } else setItemValue(0);
+    
   };
 
   const handleChangeTabIndex = (
@@ -101,7 +102,7 @@ const BookDetailPage: React.FC = () => {
 
   const addBookToCart = (book: GetBookResponseDto, quantity: number) => {
     if (quantity <= 0) {
-      alert("Choose the quantity u want to add!");
+      alert("Choose the quantity you want to add!");
       return;
     }
     dispatch(
@@ -109,11 +110,7 @@ const BookDetailPage: React.FC = () => {
     );
     alert(`Added ${book.title} to cart!`);
   };
-  // const [tabIndex, setTabIndex] = useState<number>(0);
 
-  // const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-  //   setTabIndex(newValue);
-  // };
   if (loading) return <div>Book detail loading skeleton here</div>;
 
   return book ? (

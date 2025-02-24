@@ -6,7 +6,11 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useSelector } from "react-redux";
 
-export default function CartDetail() {
+interface CartDetailProps {
+  handleChangePage: () => void;
+}
+
+export default function CartDetail({ handleChangePage }: CartDetailProps) {
   const cart = useSelector((state: RootState) => state.cart);
 
   return (
@@ -40,7 +44,7 @@ export default function CartDetail() {
           {/* Link đến trang giỏ hàng */}
           <Box className="mt-4 flex justify-end">
             <Link href="/cart">
-              <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} className="text-white">
+              <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} className="text-white !bg-primary" onClick={handleChangePage}>
                 Go to Cart
               </Button>
             </Link>

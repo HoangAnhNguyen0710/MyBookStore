@@ -1,4 +1,4 @@
-// import { OrderDetail } from "@/api";
+import { useEffect } from "react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartDetail {
@@ -8,13 +8,17 @@ export interface CartDetail {
   title: string;
   sub_total: number;
 }
-const initialCart: CartDetail[] = JSON.parse(
-  localStorage.getItem("Cart") || "[]"
-);
+
+const getInitialCart = (): CartDetail[] => {
+  if (typeof window !== "undefined") {
+    return JSON.parse(sessionStorage.getItem("Cart") || "[]");
+  }
+  return [];
+};
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: initialCart,
+  initialState: [] as CartDetail[], // Tránh hydration lỗi bằng cách để mảng rỗng
   reducers: {
     addToCart: (
       state,
@@ -26,16 +30,15 @@ const cartSlice = createSlice({
       }>
     ) => {
       const { bookId, quantity, price, title } = action.payload;
-      const existingItem = state.find((item) => item.bookId === bookId);
+      const existingItemIndex = state.findIndex((item) => item.bookId === bookId);
 
-      if (existingItem) {
-        existingItem.quantity += quantity;
-
-        // if quantity is negative value (reduce quantity) and become 0 => clear item from cart
-        if (existingItem.quantity == 0) {
-          state = state.filter((item) => item.bookId !== existingItem.bookId);
+      if (existingItemIndex !== -1) {
+        state[existingItemIndex].quantity += quantity;
+        if (state[existingItemIndex].quantity === 0) {
+          state.splice(existingItemIndex, 1);
+        } else {
+          state[existingItemIndex].sub_total = state[existingItemIndex].quantity * price;
         }
-        existingItem.sub_total = existingItem.quantity * price;
       } else {
         state.push({
           bookId,
@@ -46,14 +49,21 @@ const cartSlice = createSlice({
         });
       }
 
-      localStorage.setItem("Cart", JSON.stringify(state));
+      sessionStorage.setItem("Cart", JSON.stringify(state));
     },
     clearCart: (state) => {
-      state.length = 0; // Clear all items in cart
-      localStorage.removeItem("Cart");
+      state.length = 0;
+      sessionStorage.removeItem("Cart");
     },
   },
 });
 
 export const { addToCart, clearCart } = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;
+
+export function useCartInitializer(setCart: (cart: CartDetail[]) => void) {
+  useEffect(() => {
+    const cart = getInitialCart();
+    setCart(cart);
+  }, []);
+}
