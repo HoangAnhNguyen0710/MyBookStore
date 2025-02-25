@@ -1,237 +1,194 @@
-// "use client";
+"use client";
 
-// import { useState, useEffect } from "react";
-// import { useSearchParams } from "next/navigation";
-// import {
-//   TextField,
-//   InputAdornment,
-//   MenuItem,
-//   Slider,
-//   Typography,
-// } from "@mui/material";
-// import SearchIcon from "@mui/icons-material/Search";
-// import CarouselCard from "@/components/Home/CarouselCard";
+import { useEffect, useState } from "react";
+import { BookFilterDto, BookFilterResponseDto, BookListItem } from "@/api";
+import {
+  TextField,
+  Card,
+  Typography,
+  Chip,
+  Pagination,
+  Button,
+} from "@mui/material";
+import { listingBooks } from "@/services/filterBooks";
+import BookCard from "@/components/Home/BookCard";
 
-// // Type definitions for categories and locations
-// interface CategoryMap {
-//   [key: number]: string;
-// }
+export default function FilterBooksPage() {
+  const [filters, setFilters] = useState<BookFilterDto>({
+    author: [],
+    title: "",
+    publisher_ids: [],
+    category_ids: [],
+    rating_from: 0,
+    rating_to: 5,
+    price_from: 0,
+    price_to: 1000,
+    tags: [],
+    page: 1,
+    per_page: 8,
+  });
 
-export default function BookPage() {
-  // const searchParams = useSearchParams();
-  // const category = searchParams.get("category");
-  // const [title, setTitle] = useState<string>("Cafe List");
-  // const [filteredCafes, setFilteredCafes] =
-  //   useState<CafeCardItem[]>(mockCafeData);
-  // const [filters, setFilters] = useState({
-  //   search: "",
-  //   category: "",
-  //   location: "",
-  //   priceRange: [0, 30], // Default price range
-  //   rating: 0,
-  // });
-  // const categoryMap: CategoryMap = {
-  //   1: "Americano",
-  //   2: "Latte",
-  //   3: "Espresso",
-  // };
-  // const locationOptions = [
-  //   "New York",
-  //   "Los Angeles",
-  //   "San Francisco",
-  //   "Chicago",
-  //   "Boston",
-  // ];
-  // // Update title dynamically
-  // useEffect(() => {
-  //   if (category) {
-  //     const categoryName = categoryMap[Number(category)] || "Unknown";
-  //     setTitle(`Cafe List with Category = "${categoryName}"`);
-  //   } else {
-  //     setTitle("Cafe List");
-  //   }
-  // }, [category]);
-  // // Update filtered cafes when filters change
-  // useEffect(() => {
-  //   const filtered = mockCafeData.filter((cafe) => {
-  //     const matchesSearch =
-  //       !filters.search ||
-  //       cafe.name.toLowerCase().includes(filters.search.toLowerCase());
-  //     const matchesCategory =
-  //       !filters.category || String(cafe.id) === filters.category;
-  //     const matchesLocation =
-  //       !filters.location || cafe.location_province === filters.location;
-  //     const cafePriceFrom = cafe.price_from ?? 0; // Default to 0 if undefined
-  //     const cafePriceTo = cafe.price_to ?? Infinity; // Default to Infinity if undefined
-  //     const matchesPrice =
-  //       cafePriceFrom >= filters.priceRange[0] &&
-  //       cafePriceTo <= filters.priceRange[1];
-  //     const matchesRating = cafe.rating >= filters.rating;
-  //     return (
-  //       matchesSearch &&
-  //       matchesCategory &&
-  //       matchesLocation &&
-  //       matchesPrice &&
-  //       matchesRating
-  //     );
-  //   });
-  //   setFilteredCafes(filtered);
-  // }, [filters]);
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const handleFilterChange = (key: string, value: any) => {
-  //   setFilters((prev) => ({ ...prev, [key]: value }));
-  // };
-  // return (
-  //   <div className="flex flex-col items-center min-h-screen p-6 gap-4 bg-gray-50 sm:p-10">
-  //     {/* Title */}
-  //     <h1 className="text-2xl font-bold text-primary">{title}</h1>
-  //     {/* Main Layout */}
-  //     <div className="flex flex-col w-full max-w-7xl gap-4 sm:flex-row">
-  //       {/* Sidebar Filters */}
-  //       <aside className="w-full sm:w-1/3 bg-white shadow-md rounded-lg px-6 py-4 space-y-6">
-  //         <h2 className="text-xl font-semibold text-gray-700">Filters</h2>
-  //         {/* Search Filter */}
-  //         <TextField
-  //           label="Search"
-  //           variant="outlined"
-  //           fullWidth
-  //           placeholder="Search cafes..."
-  //           onChange={(e) => handleFilterChange("search", e.target.value)}
-  //           className="bg-white rounded"
-  //           slotProps={{
-  //             input: {
-  //               startAdornment: (
-  //                 <InputAdornment position="start">
-  //                   <SearchIcon />
-  //                 </InputAdornment>
-  //               ),
-  //             },
-  //           }}
-  //         />
-  //         {/* Category Dropdown */}
-  //         <TextField
-  //           label="Category"
-  //           variant="outlined"
-  //           select
-  //           fullWidth
-  //           value={filters.category}
-  //           onChange={(e) => handleFilterChange("category", e.target.value)}
-  //         >
-  //           <MenuItem value="">All</MenuItem>
-  //           {Object.entries(categoryMap).map(([id, name]) => (
-  //             <MenuItem key={id} value={id}>
-  //               {name}
-  //             </MenuItem>
-  //           ))}
-  //         </TextField>
-  //         {/* Location Dropdown */}
-  //         <TextField
-  //           label="Location"
-  //           variant="outlined"
-  //           select
-  //           fullWidth
-  //           value={filters.location}
-  //           onChange={(e) => handleFilterChange("location", e.target.value)}
-  //         >
-  //           <MenuItem value="">All</MenuItem>
-  //           {locationOptions.map((location) => (
-  //             <MenuItem key={location} value={location}>
-  //               {location}
-  //             </MenuItem>
-  //           ))}
-  //         </TextField>
-  //         {/* Price Range Slider */}
-  //         <div>
-  //           <Typography gutterBottom>Price Range ($)</Typography>
-  //           <div className="mx-2">
-  //             <Slider
-  //               value={filters.priceRange}
-  //               onChange={(e, value) => handleFilterChange("priceRange", value)}
-  //               valueLabelDisplay="auto"
-  //               min={0}
-  //               max={50}
-  //             />
-  //           </div>
-  //         </div>
-  //         {/* Rating Filter */}
-  //         <div>
-  //           <Typography gutterBottom>Minimum Rating</Typography>
-  //           <div className="mx-2">
-  //             <Slider
-  //               value={filters.rating}
-  //               onChange={(e, value) => handleFilterChange("rating", value)}
-  //               valueLabelDisplay="auto"
-  //               step={0.5}
-  //               min={0}
-  //               max={5}
-  //             />
-  //           </div>
-  //         </div>
-  //       </aside>
-  //       {/* Cafe List */}
-  //       <div className="flex flex-col w-full sm:w-full space-y-4">
-  //         {/* Cafe Cards Grid */}
-  //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-  //           {filteredCafes.map((cafe) => (
-  //             <CarouselCard key={cafe.id} cafe={cafe} />
-  //           ))}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
+  const [books, setBooks] = useState<BookListItem[] | undefined>();
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [authorInput, setAuthorInput] = useState("");
+
+  const handleFilterChange = (field: keyof BookFilterDto, value: unknown) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const addAuthor = () => {
+    if (authorInput.length > 0) {
+      const trimmedAuthor = authorInput.trim();
+      if (trimmedAuthor && Array.isArray(filters.author)) {
+        if (!filters.author.includes(trimmedAuthor)) {
+          setFilters((prev) => ({
+            ...prev,
+            author: [...(prev.author ?? []), trimmedAuthor], // Đảm bảo `author` luôn là mảng
+          }));
+        }
+      } else {
+        setFilters((prev) => ({
+          ...prev,
+          author: [trimmedAuthor], // Nếu `prev.author` chưa có, khởi tạo mảng mới
+        }));
+      }
+      setAuthorInput("");
+    }
+  };
+
+  const removeAuthor = (authorToRemove: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      author: prev.author?.filter((a) => a !== authorToRemove) || [], // Luôn trả về mảng
+    }));
+  };
+
+  useEffect(() => {
+    console.log(filters.author);
+    async function fetchBooks() {
+      setLoading(true);
+      try {
+        const filter_list = await listingBooks(filters);
+        const data = filter_list as unknown as BookFilterResponseDto;
+        if (data) {
+          setBooks(data.list);
+          setTotalPages(
+            Math.ceil((data.total ?? 0) / (filters.per_page ?? 10)) || 1
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBooks();
+  }, [filters]);
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      {/* Filter Section */}
+      <Card className="p-6 mb-6 shadow-md">
+        <Typography variant="h5" className="mb-6 font-semibold">
+          Filter Books
+        </Typography>
+
+        {/* Author Search */}
+        <div className="mb-6">
+          <Typography variant="subtitle1" className="mb-2 font-medium">
+            Search by Author
+          </Typography>
+          <div className="flex gap-2">
+            <TextField
+              label="Enter author name"
+              fullWidth
+              value={authorInput}
+              onChange={(e) => setAuthorInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addAuthor()}
+            />
+            <Button
+              variant="contained"
+              className="!bg-primary text-white"
+              onClick={addAuthor}
+            >
+              Add Author
+            </Button>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {(filters.author ?? []).map((author) => (
+              <Chip
+                key={author}
+                label={author}
+                onDelete={() => removeAuthor(author)}
+                className="bg-gray-200"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Title Filter */}
+        <TextField
+          label="Title"
+          fullWidth
+          className="my-6"
+          value={filters.title}
+          onChange={(e) => handleFilterChange("title", e.target.value)}
+        />
+
+        {/* Price Range */}
+        <div className="flex gap-4 my-6">
+          <TextField
+            label="Min Price"
+            type="number"
+            fullWidth
+            value={filters.price_from}
+            onChange={(e) =>
+              handleFilterChange("price_from", Number(e.target.value))
+            }
+          />
+          <TextField
+            label="Max Price"
+            type="number"
+            fullWidth
+            value={filters.price_to}
+            onChange={(e) =>
+              handleFilterChange("price_to", Number(e.target.value))
+            }
+          />
+        </div>
+      </Card>
+
+      {/* Books List */}
+      {loading && <div>Loading books...</div>}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {!books || books.length === 0 ? (
+          <Typography variant="h6" className="text-center col-span-full">
+            No books found.
+          </Typography>
+        ) : (
+          books.map((book) => <BookCard key={book.id} book={book} />)
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6">
+          <Pagination
+            count={totalPages}
+            page={filters.page}
+            onChange={handlePageChange}
+            color="secondary"
+          />
+        </div>
+      )}
+    </div>
+  );
 }
-
-// // Mock Data
-// const mockCafeData: CafeCardItem[] = [
-//   {
-//     id: 1,
-//     preview_url: "/images/cafe1.jpg",
-//     name: "Cafe Americano",
-//     rating: 4.5,
-//     number_of_reviews: 120,
-//     location_province: "New York",
-//     price_from: 10,
-//     price_to: 20,
-//   },
-//   {
-//     id: 2,
-//     preview_url: "/images/cafe2.jpg",
-//     name: "Latte Lounge",
-//     rating: 4.0,
-//     number_of_reviews: 85,
-//     location_province: "Los Angeles",
-//     price_from: 8,
-//     price_to: 15,
-//   },
-//   {
-//     id: 3,
-//     preview_url: "/images/cafe1.jpg",
-//     name: "Espresso Express",
-//     rating: 5.0,
-//     number_of_reviews: 200,
-//     location_province: "San Francisco",
-//     price_from: 12,
-//     price_to: 25,
-//   },
-//   {
-//     id: 4,
-//     preview_url: "/images/cafe2.jpg",
-//     name: "Mocha Magic",
-//     rating: 3.5,
-//     number_of_reviews: 50,
-//     location_province: "Chicago",
-//     price_from: 7,
-//     price_to: 12,
-//   },
-//   {
-//     id: 5,
-//     preview_url: "/images/cafe1.jpg",
-//     name: "Cappuccino Corner",
-//     rating: 4.8,
-//     number_of_reviews: 150,
-//     location_province: "Boston",
-//     price_from: 10,
-//     price_to: 18,
-//   },
-// ];
